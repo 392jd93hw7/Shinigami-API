@@ -27,7 +27,16 @@ app.get("/health", (_req, res) => {
 app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
   const { malId, episode, mode } = req.params;
 
-  if (!/^\\d+$/.test(malId) || !/^\\d+$/.test(episode)) {
+  // Use an explicit digit character class to avoid escaping mistakes.
+  if (!/^[0-9]+$/.test(malId) || !/^[0-9]+$/.test(episode)) {
+    return res.status(400).json({
+      success: false,
+      error: "INVALID_PARAMETERS",
+      message: "malId and episode must contain digits only."
+    });
+  }
+
+  if (Number(malId) <= 0 || Number(episode) <= 0) {
     return res.status(400).json({
       success: false,
       error: "INVALID_PARAMETERS",
@@ -66,7 +75,7 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
     const body = await upstream.text();
     const contentType = upstream.headers.get("content-type") || "";
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       request: {
         malId: Number(malId),
@@ -82,12 +91,12 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
         isJson: contentType.includes("application/json"),
         isHtml: contentType.includes("text/html")
       },
-      // This is the raw upstream response body, not a decoded stream manifest.
+      // The upstream body may be HTML; it is preserved verbatim for inspection.
       rawBody: body
     });
   } catch (error) {
     const timedOut = error?.name === "AbortError";
-    res.status(timedOut ? 504 : 502).json({
+    return res.status(timedOut ? 504 : 502).json({
       success: false,
       error: timedOut ? "UPSTREAM_TIMEOUT" : "UPSTREAM_REQUEST_FAILED",
       message: timedOut

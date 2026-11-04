@@ -10,15 +10,15 @@ app.use(cors());
 app.use(express.json({ limit: "32kb" }));
 
 function inspectPlayerHtml(html, pageUrl) {
-  const titleMatch = html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i);
+  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   const title = titleMatch?.[1]
     ?.replace(/<[^>]*>/g, "")
     .replace(/&amp;/g, "&")
     .trim() || null;
 
-  const configMatch = html.match(/window\\.__P\\s*=\\s*(["'])([\\s\\S]*?)\\1\\s*;?/);
+  const configMatch = html.match(/window\.__P\s*=\s*(["'])([\s\S]*?)\1\s*;?/);
   const scriptSources = [];
-  const scriptRegex = /<script\\b[^>]*\\bsrc=["']([^"']+)["'][^>]*>/gi;
+  const scriptRegex = /<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
   let scriptMatch;
 
   while ((scriptMatch = scriptRegex.exec(html)) !== null) {
@@ -87,7 +87,7 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
   }
 
   const upstreamUrl = new URL(
-    `/stream/mal/${malId}/${episode}/${mode}`,
+    "/stream/mal/" + malId + "/" + episode + "/" + mode,
     UPSTREAM_BASE
   );
   const controller = new AbortController();
@@ -128,7 +128,6 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
       page
     };
 
-    // Include full HTML only when explicitly requested for debugging.
     if (req.query.includeRaw === "1") {
       result.rawBody = body;
     }
@@ -158,5 +157,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Shinigami API listening on port ${PORT}`);
+  console.log("Shinigami API listening on port " + PORT);
 });

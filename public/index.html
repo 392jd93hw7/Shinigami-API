@@ -149,7 +149,8 @@ $("send").addEventListener("click",async()=>{
   if(endpoint.value==="stream" && body && typeof body==="object" && body.playback && body.playback.hlsProxyUrl){
    $("hlsUrl").value=body.playback.hlsProxyUrl;
    populateSubtitles((body.playback.subtitles && body.playback.subtitles.tracks) || []);
-   playerMessage("HLS proxy URL received. Press Load stream to start playback.","ok");
+   playerMessage("Fresh stream URL received from the scraper. Loading HLS automatically…","ok");
+   $("loadHls").click();
   }
  }catch(err){
   response.textContent=JSON.stringify({error:"REQUEST_FAILED",message:err.message,tip:"Check the API base URL, server status, and CORS configuration."},null,2);

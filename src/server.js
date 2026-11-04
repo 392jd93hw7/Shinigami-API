@@ -9,6 +9,41 @@ app.disable("x-powered-by");
 app.use(cors());
 app.use(express.json({ limit: "32kb" }));
 
+function inspectPlayerHtml(html, pageUrl) {
+  const titleMatch = html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i);
+  const title = titleMatch?.[1]
+    ?.replace(/<[^>]*>/g, "")
+    .replace(/&amp;/g, "&")
+    .trim() || null;
+
+  const configMatch = html.match(/window\\.__P\\s*=\\s*(["'])([\\s\\S]*?)\\1\\s*;?/);
+  const scriptSources = [];
+  const scriptRegex = /<script\\b[^>]*\\bsrc=["']([^"']+)["'][^>]*>/gi;
+  let scriptMatch;
+
+  while ((scriptMatch = scriptRegex.exec(html)) !== null) {
+    try {
+      scriptSources.push(new URL(scriptMatch[1], pageUrl).toString());
+    } catch {
+      scriptSources.push(scriptMatch[1]);
+    }
+  }
+
+  return {
+    title,
+    hasPlayerContainer: /id=["']player["']/i.test(html),
+    hasPlayerConfig: Boolean(configMatch),
+    playerConfig: configMatch
+      ? {
+          variable: "window.__P",
+          valueLength: configMatch[2].length,
+          representation: "opaque string; decoding format not verified"
+        }
+      : null,
+    scripts: scriptSources
+  };
+}
+
 app.get("/", (_req, res) => {
   res.json({
     name: "Shinigami API",
@@ -27,7 +62,6 @@ app.get("/health", (_req, res) => {
 app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
   const { malId, episode, mode } = req.params;
 
-  // Use an explicit digit character class to avoid escaping mistakes.
   if (!/^[0-9]+$/.test(malId) || !/^[0-9]+$/.test(episode)) {
     return res.status(400).json({
       success: false,
@@ -56,7 +90,6 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
     `/stream/mal/${malId}/${episode}/${mode}`,
     UPSTREAM_BASE
   );
-
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 25000);
 
@@ -74,8 +107,9 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
 
     const body = await upstream.text();
     const contentType = upstream.headers.get("content-type") || "";
+    const page = inspectPlayerHtml(body, upstream.url || upstreamUrl.toString());
 
-    return res.status(200).json({
+    const result = {
       success: true,
       request: {
         malId: Number(malId),
@@ -91,9 +125,15 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
         isJson: contentType.includes("application/json"),
         isHtml: contentType.includes("text/html")
       },
-      // The upstream body may be HTML; it is preserved verbatim for inspection.
-      rawBody: body
-    });
+      page
+    };
+
+    // Include full HTML only when explicitly requested for debugging.
+    if (req.query.includeRaw === "1") {
+      result.rawBody = body;
+    }
+
+    return res.status(200).json(result);
   } catch (error) {
     const timedOut = error?.name === "AbortError";
     return res.status(timedOut ? 504 : 502).json({

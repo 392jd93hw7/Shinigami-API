@@ -173,7 +173,8 @@ $("subtitleSelect").addEventListener("change",loadExternalSubtitle);
 $("loadHls").addEventListener("click",()=>{
  const url=$("hlsUrl").value.trim(),video=$("hlsVideo");
  if(!url){playerMessage("Enter an HLS proxy URL or run the extraction endpoint first.","error");return}
- if(!/^https?:\\/\\//i.test(url)){playerMessage("Please enter a valid HTTP(S) HLS URL.","error");return}
+ let parsedUrl;try{parsedUrl=new URL(url)}catch{playerMessage("Please enter a valid HTTP(S) HLS URL.","error");return}
+ if(parsedUrl.protocol!=="http:" && parsedUrl.protocol!=="https:"){playerMessage("Please enter a valid HTTP(S) HLS URL.","error");return}
  if(hlsInstance){hlsInstance.destroy();hlsInstance=null}
  video.pause();video.removeAttribute("src");video.load();clearExternalTracks();
  if(video.canPlayType("application/vnd.apple.mpegurl")){

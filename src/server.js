@@ -129,10 +129,15 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
         }))
       : [];
 
-    const audioDetected = manifest.fetched
-      ? manifest.audioTracks.length > 0 ||
-        manifest.audioStatus === "audio-codec-advertised-in-variant"
-      : null;
+    let audioDetected = null;
+    if (manifest.fetched) {
+      if (manifest.audioTracks.length > 0 ||
+          manifest.audioStatus === "audio-codec-advertised-in-variant") {
+        audioDetected = true;
+      } else if (manifest.audioStatus !== "not-determined-from-master-playlist") {
+        audioDetected = false;
+      }
+    }
 
     const result = {
       success: true,

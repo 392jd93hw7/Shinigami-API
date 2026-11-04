@@ -1,6 +1,43 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseHlsMasterPlaylist } from "../src/zokoanime.js";
+import {
+  extractPlayerConfig,
+  parseHlsMasterPlaylist
+} from "../src/zokoanime.js";
+
+function encodePlayerConfig(config) {
+  const plain = Buffer.from(JSON.stringify(config), "utf8");
+  const key = Buffer.from("otaku-embed-v1", "utf8");
+  const encrypted = Buffer.alloc(plain.length);
+
+  for (let i = 0; i < plain.length; i += 1) {
+    encrypted[i] = plain[i] ^ key[i % key.length];
+  }
+
+  return encrypted.toString("base64");
+}
+
+test("extracts the player JSON from window.__P", () => {
+  const encoded = encodePlayerConfig({
+    src: "https://hls.dramahot.top/master.m3u8",
+    default_audio: "Japanese",
+    subtitles: [{ lang: "en", label: "English", src: "https://media.test/en.vtt" }]
+  });
+  const html = '<script>window.__P="' + encoded + '"</script>';
+
+  const result = extractPlayerConfig(html);
+
+  assert.equal(result.src, "https://hls.dramahot.top/master.m3u8");
+  assert.equal(result.default_audio, "Japanese");
+  assert.equal(result.subtitles.length, 1);
+});
+
+test("rejects missing player configuration", () => {
+  assert.throws(
+    () => extractPlayerConfig("<html><body>no config</body></html>"),
+    /window\.__P/
+  );
+});
 
 test("parses HLS variant, audio and subtitle renditions", () => {
   const playlist = [

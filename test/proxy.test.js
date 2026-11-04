@@ -43,7 +43,7 @@ test("creates signed proxy URLs and verifies their destination", () => {
     "https://hls.dramahot.top/master.m3u8"
   );
   assert.throws(
-    () => verifyProxyToken(token.replace(/[a-f0-9]$/, "0")),
+    () => verifyProxyToken(token.slice(0, -1) + (token.endsWith("A") ? "B" : "A")),
     /signature/
   );
 });

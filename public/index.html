@@ -9,7 +9,7 @@
 :root{color-scheme:dark;--bg:#09090d;--panel:#111117;--panel2:#17171f;--line:#292936;--muted:#9292a3;--text:#f4f4f7;--purple:#9b7bff;--green:#62dfae;--red:#ff737d}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -15%,#282044 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer}.layout{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}.sidebar{border-right:1px solid var(--line);padding:25px 16px;position:sticky;top:0;height:100vh;background:#0b0b10}.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:18px;padding:0 9px 28px}.logo{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#a78bfa,#6846d9);color:white;font-weight:900}.side-label{color:#696979;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:13px 10px 7px}.nav{display:flex;align-items:center;gap:10px;padding:10px;border-radius:9px;color:#b5b5c2;text-decoration:none;margin:3px 0}.nav:hover,.nav.active{background:#211b34;color:#d9ceff}.nav span:first-child{width:18px;text-align:center}.side-foot{position:absolute;bottom:20px;left:24px;color:#777789;font-size:12px}.main{max-width:1450px;width:100%;padding:34px clamp(20px,4vw,58px) 70px;margin:0 auto}.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--muted);font-size:12px;margin-bottom:40px}.status{display:inline-flex;align-items:center;gap:7px;border:1px solid #23513f;background:#10251d;color:var(--green);padding:6px 10px;border-radius:99px}.dot{width:7px;height:7px;border-radius:50%;background:currentColor}.hero{max-width:850px;margin-bottom:34px}.eyebrow{color:#b49dff;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:2px}.hero h1{font-size:clamp(34px,5vw,54px);line-height:1.06;letter-spacing:-2px;margin:12px 0}.hero p{color:var(--muted);font-size:15px;max-width:690px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:25px 0 36px}.stat,.card{border:1px solid var(--line);background:linear-gradient(145deg,#14141c,#101016);border-radius:14px}.stat{padding:16px 18px}.stat strong{display:block;font-size:23px}.stat span{color:var(--muted);font-size:12px}.section{margin:38px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:14px}.section h2{font-size:20px;letter-spacing:-.4px;margin:0}.section-head p{margin:4px 0 0;color:var(--muted);font-size:12px}.endpoint-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.endpoint{padding:17px}.method{font-size:10px;font-weight:900;letter-spacing:1px;color:#07150f;background:var(--green);border-radius:5px;padding:3px 7px}.method.post{background:#a78bfa;color:#160e2b}.path{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;margin:12px 0 6px;color:#e4dcff}.endpoint p{color:var(--muted);font-size:12px;margin:0 0 12px}.small-link{color:#bdaaff;text-decoration:none;font-size:12px}.playground{display:grid;grid-template-columns:minmax(280px,.82fr) minmax(0,1.18fr);gap:14px}.card{padding:19px}.card h3{margin:0 0 5px;font-size:16px}.sub{color:var(--muted);font-size:12px;margin:0 0 17px}.field{margin:13px 0}.field label{display:block;color:#b8b8c5;font-size:12px;margin-bottom:6px}.field input,.field select{width:100%;background:#0b0b11;border:1px solid #333342;border-radius:8px;padding:10px 11px;color:var(--text);outline:none}.field input:focus,.field select:focus{border-color:var(--purple)}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.check{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.btn{border:1px solid var(--line);background:#20202b;color:#eee;padding:9px 13px;border-radius:8px}.btn.primary{background:#8c6bf0;border-color:#8c6bf0;color:white;font-weight:700}.btn:hover{filter:brightness(1.12)}.response-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.response-top h3{margin:0}.response-meta{font-size:11px;color:var(--muted)}.response{background:#08080d;border:1px solid #292936;border-radius:9px;min-height:310px;max-height:650px;overflow:auto;padding:14px;color:#d8d8e4;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.response.empty{color:#777789;display:grid;place-items:center;text-align:center}.response a{color:#bdaaff}.base-url{display:flex;gap:8px;align-items:center;margin:0 0 15px}.base-url input{flex:1;min-width:0;background:#0b0b11;border:1px solid #333342;border-radius:8px;padding:9px 11px;color:white}.table-wrap{overflow-x:auto}.endpoint-table{width:100%;border-collapse:collapse;font-size:12px}.endpoint-table th,.endpoint-table td{text-align:left;padding:11px;border-bottom:1px solid var(--line);vertical-align:top}.endpoint-table th{color:#9a9aaa;font-weight:600}.endpoint-table code{color:#d9ceff}.note{border:1px solid #42366c;background:#171327;border-radius:10px;padding:13px 15px;color:#c8c0df;font-size:12px}.footer{border-top:1px solid var(--line);padding-top:20px;margin-top:55px;color:#777789;font-size:12px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:relative;height:auto;padding:12px 16px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 5px 10px}.side-label,.side-foot{display:none}.sidebar nav{display:flex;overflow:auto}.nav{white-space:nowrap;padding:8px}.main{padding-top:24px}.playground{grid-template-columns:1fr}}@media(max-width:620px){.endpoint-grid,.stats{grid-template-columns:1fr}.topline{margin-bottom:25px}.main{padding-left:15px;padding-right:15px}.row{grid-template-columns:1fr}.response{min-height:240px}}
-</style>
+.player-shell{margin-top:14px}.video-wrap{background:#050507;border:1px solid #302d3b;border-radius:12px;overflow:hidden}.video-wrap video{display:block;width:100%;max-height:620px;aspect-ratio:16/9;background:#000}.player-controls{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:end;margin-top:12px}.player-controls .field{margin:0}.player-status{color:var(--muted);font-size:12px;margin-top:9px;min-height:18px}.player-status.error{color:var(--red)}.player-status.ok{color:var(--green)}@media(max-width:620px){.player-controls{grid-template-columns:1fr 1fr}.player-controls .field{grid-column:1/-1}}</style>
 </head>
 <body>
 <div class="layout">
@@ -72,6 +72,21 @@
    </div>
   </div>
  </section>
+ <section class="section" id="player">
+  <div class="section-head"><div><h2>HLS Player</h2><p>Play the signed HLS proxy URL returned by the extraction endpoint.</p></div></div>
+  <div class="card player-shell">
+   <div class="video-wrap"><video id="hlsVideo" controls playsinline preload="metadata"></video></div>
+   <div class="player-controls">
+    <div class="field"><label for="hlsUrl">HLS proxy URL</label><input id="hlsUrl" type="url" placeholder="https://your-api.example.com/api/proxy/…"></div>
+    <button class="btn primary" id="loadHls">▶ Load stream</button><button class="btn" id="stopHls">Stop</button>
+   </div>
+   <div class="row">
+    <div class="field"><label for="subtitleSelect">Subtitle track</label><select id="subtitleSelect"><option value="">No external subtitle</option></select></div>
+    <div class="field"><label>Playback engine</label><input id="engineStatus" readonly value="Waiting for stream"></div>
+   </div>
+   <div class="player-status" id="playerStatus">Run the ZokoAnime extraction endpoint; its hlsProxyUrl will be inserted here automatically.</div>
+  </div>
+ </section>
  <section class="section" id="reference">
   <div class="section-head"><div><h2>Quick reference</h2><p>Parameters and response fields from the current implementation.</p></div></div>
   <div class="card table-wrap">
@@ -89,9 +104,11 @@
  <footer class="footer"><span>Shinigami API · Developer Console</span><span>Only documented, currently implemented routes are listed.</span></footer>
 </main>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const endpoint=$("endpoint"),base=$("baseUrl"),response=$("response"),meta=$("responseMeta"),requestUrl=$("requestUrl");
+let hlsInstance=null;
 function baseValue(){return (base.value.trim()||location.origin).replace(/\/+$/,"")}
 function build(){
  let path="/health",method="GET";
@@ -129,6 +146,11 @@ $("send").addEventListener("click",async()=>{
   else body=await res.text();
   response.textContent=typeof body==="string"?body:JSON.stringify(body,null,2);
   meta.textContent=res.status+" "+res.statusText+" · "+elapsed+" ms";
+  if(endpoint.value==="stream" && body && typeof body==="object" && body.playback && body.playback.hlsProxyUrl){
+   $("hlsUrl").value=body.playback.hlsProxyUrl;
+   populateSubtitles((body.playback.subtitles && body.playback.subtitles.tracks) || []);
+   playerMessage("HLS proxy URL received. Press Load stream to start playback.","ok");
+  }
  }catch(err){
   response.textContent=JSON.stringify({error:"REQUEST_FAILED",message:err.message,tip:"Check the API base URL, server status, and CORS configuration."},null,2);
   meta.textContent="Network error";
@@ -136,6 +158,38 @@ $("send").addEventListener("click",async()=>{
 });
 $("copy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(response.textContent);$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy",1200)}catch{$("copy").textContent="Unavailable"}});
 $("reset").addEventListener("click",()=>{$("malId").value="64340";$("episode").value="6";$("mode").value="sub";$("raw").checked=false;$("token").value="";$("head").checked=false;endpoint.value="health";updateFields();response.textContent="Your API response will appear here.";response.classList.add("empty");meta.textContent="No request sent"});
+
+function playerMessage(message,kind=""){ $("playerStatus").textContent=message; $("playerStatus").className="player-status "+kind; }
+function populateSubtitles(tracks){
+ const select=$("subtitleSelect");select.innerHTML='<option value="">No external subtitle</option>';
+ for(const track of tracks){if(!track.proxyUrl)continue;const option=document.createElement("option");option.value=track.proxyUrl;option.textContent=track.label||track.language||"Subtitle";select.appendChild(option);}
+}
+function clearExternalTracks(){ $("hlsVideo").querySelectorAll("track[data-external='true']").forEach(track=>track.remove()); }
+function loadExternalSubtitle(){
+ const video=$("hlsVideo");clearExternalTracks();const url=$("subtitleSelect").value;if(!url)return;
+ const track=document.createElement("track");track.kind="subtitles";track.label=$("subtitleSelect").selectedOptions[0]?.textContent||"Subtitle";track.srclang="und";track.src=url;track.default=true;track.dataset.external="true";video.appendChild(track);
+}
+$("subtitleSelect").addEventListener("change",loadExternalSubtitle);
+$("loadHls").addEventListener("click",()=>{
+ const url=$("hlsUrl").value.trim(),video=$("hlsVideo");
+ if(!url){playerMessage("Enter an HLS proxy URL or run the extraction endpoint first.","error");return}
+ if(!/^https?:\\/\\//i.test(url)){playerMessage("Please enter a valid HTTP(S) HLS URL.","error");return}
+ if(hlsInstance){hlsInstance.destroy();hlsInstance=null}
+ video.pause();video.removeAttribute("src");video.load();clearExternalTracks();
+ if(video.canPlayType("application/vnd.apple.mpegurl")){
+  video.src=url;$("engineStatus").value="Native HLS";playerMessage("Stream loaded using native HLS. Press play.","ok");
+ }else if(window.Hls && Hls.isSupported()){
+  hlsInstance=new Hls({enableWorker:true,lowLatencyMode:false});hlsInstance.loadSource(url);hlsInstance.attachMedia(video);
+  hlsInstance.on(Hls.Events.MANIFEST_PARSED,()=>{$("engineStatus").value="hls.js";playerMessage("HLS manifest loaded. Press play.","ok")});
+  hlsInstance.on(Hls.Events.ERROR,(_event,data)=>{if(data.fatal)playerMessage("HLS playback error: "+data.details+" ("+data.type+"). Check the proxy URL and media host allowlist.","error")});
+  $("engineStatus").value="hls.js";playerMessage("Loading HLS manifest…");
+ }else{playerMessage("This browser does not support HLS playback.","error")}
+});
+$("stopHls").addEventListener("click",()=>{
+ if(hlsInstance){hlsInstance.destroy();hlsInstance=null}
+ const video=$("hlsVideo");video.pause();video.removeAttribute("src");video.load();clearExternalTracks();$("engineStatus").value="Stopped";playerMessage("Playback stopped.");
+});
+
 async function checkHealth(){try{const r=await fetch(baseValue()+"/health");if(!r.ok)throw Error();$("healthText").textContent="API online"}catch{$("healthText").textContent="API status unknown"}}
 updateFields();checkHealth();
 </script>

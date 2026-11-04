@@ -1,3 +1,5 @@
+import { fetchAllowedMedia } from "./proxy.js";
+
 const PLAYER_CONFIG_KEY = Buffer.from("otaku-embed-v1", "utf8");
 
 export function extractPlayerConfig(html) {
@@ -128,41 +130,14 @@ export function parseHlsMasterPlaylist(text, playlistUrl) {
   };
 }
 
-function isAllowedManifestUrl(value) {
-  let url;
-
-  try {
-    url = new URL(value);
-  } catch {
-    return false;
-  }
-
-  if (url.protocol !== "https:") return false;
-
-  const suffixes = (process.env.MEDIA_HOST_ALLOWLIST || "dramahot.top")
-    .split(",")
-    .map((suffix) => suffix.trim().toLowerCase())
-    .filter(Boolean);
-  const hostname = url.hostname.toLowerCase();
-
-  return suffixes.some((suffix) =>
-    hostname === suffix || hostname.endsWith("." + suffix)
-  );
-}
-
 export async function fetchAndInspectMasterPlaylist(url) {
   if (!url) return { fetched: false, reason: "missing_manifest_url" };
-
-  if (!isAllowedManifestUrl(url)) {
-    return { fetched: false, reason: "manifest_host_not_allowlisted" };
-  }
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
 
   try {
-    const response = await fetch(url, {
-      redirect: "follow",
+    const response = await fetchAllowedMedia(url, {
       signal: controller.signal,
       headers: {
         "user-agent": "Mozilla/5.0 (compatible; ShinigamiAPI/1.0)",

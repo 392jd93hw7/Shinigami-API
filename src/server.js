@@ -5,14 +5,37 @@ import {
   inspectPlayerHtml,
   fetchAndInspectMasterPlaylist
 } from "./zokoanime.js";
+import {
+  createProxyUrl,
+  proxyMediaRequest
+} from "./proxy.js";
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const UPSTREAM_BASE = "https://zokoanime.video";
 
 app.disable("x-powered-by");
+app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json({ limit: "32kb" }));
+
+function getPublicBaseUrl(req) {
+  if (process.env.PUBLIC_BASE_URL) {
+    return new URL(process.env.PUBLIC_BASE_URL).origin;
+  }
+
+  return req.protocol + "://" + req.get("host");
+}
+
+function tryCreateProxyUrl(url, publicBaseUrl) {
+  if (!url) return null;
+
+  try {
+    return createProxyUrl(url, publicBaseUrl);
+  } catch {
+    return null;
+  }
+}
 
 app.get("/", (_req, res) => {
   res.json({
@@ -20,7 +43,8 @@ app.get("/", (_req, res) => {
     status: "ok",
     endpoints: {
       health: "/health",
-      inspect: "/api/zokoanime/stream/:malId/:episode/:mode"
+      inspect: "/api/zokoanime/stream/:malId/:episode/:mode",
+      proxy: "/api/proxy/:signedToken"
     }
   });
 });
@@ -28,6 +52,10 @@ app.get("/", (_req, res) => {
 app.get("/health", (_req, res) => {
   res.json({ success: true, status: "healthy" });
 });
+
+app.route("/api/proxy/:token")
+  .get(proxyMediaRequest)
+  .head(proxyMediaRequest);
 
 app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
   const { malId, episode, mode } = req.params;
@@ -119,19 +147,32 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
       ? playerConfig.src
       : null;
     const manifest = await fetchAndInspectMasterPlaylist(masterPlaylistUrl);
+    const publicBaseUrl = getPublicBaseUrl(req);
+
     const subtitleTracks = Array.isArray(playerConfig.subtitles)
       ? playerConfig.subtitles.map((track, index) => ({
           id: "subtitle-" + index,
           language: track.lang || null,
           label: track.label || track.lang || "Unknown",
           default: Boolean(track.default),
-          url: track.src || null
+          url: track.src || null,
+          proxyUrl: tryCreateProxyUrl(track.src, publicBaseUrl)
         }))
       : [];
 
+    const videoVariants = (manifest.variants || []).map((variant) => ({
+      ...variant,
+      proxyUrl: tryCreateProxyUrl(variant.url, publicBaseUrl)
+    }));
+
+    const audioTracks = (manifest.audioTracks || []).map((track) => ({
+      ...track,
+      proxyUrl: tryCreateProxyUrl(track.url, publicBaseUrl)
+    }));
+
     let audioDetected = null;
     if (manifest.fetched) {
-      if (manifest.audioTracks.length > 0 ||
+      if (audioTracks.length > 0 ||
           manifest.audioStatus === "audio-codec-advertised-in-variant") {
         audioDetected = true;
       } else if (manifest.audioStatus !== "not-determined-from-master-playlist") {
@@ -159,13 +200,16 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
       playback: {
         format: "hls",
         masterPlaylistUrl,
+        hlsProxyUrl: tryCreateProxyUrl(masterPlaylistUrl, publicBaseUrl),
         posterUrl: playerConfig.poster || null,
+        posterProxyUrl: tryCreateProxyUrl(playerConfig.poster, publicBaseUrl),
         spriteVttUrl: playerConfig.sprite_vtt || null,
+        spriteVttProxyUrl: tryCreateProxyUrl(playerConfig.sprite_vtt, publicBaseUrl),
         manifest,
-        videoVariants: manifest.variants || [],
+        videoVariants,
         audio: {
           defaultLanguage: playerConfig.default_audio || null,
-          tracks: manifest.audioTracks || [],
+          tracks: audioTracks,
           status: manifest.fetched
             ? manifest.audioStatus
             : "not-inspected"
@@ -191,7 +235,8 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
         audioDetected,
         subtitleDetected: subtitleTracks.length > 0,
         subtitleCount: subtitleTracks.length,
-        manifestFetched: Boolean(manifest.fetched)
+        manifestFetched: Boolean(manifest.fetched),
+        proxyEnabled: Boolean(tryCreateProxyUrl(masterPlaylistUrl, publicBaseUrl))
       }
     };
 

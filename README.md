@@ -1,6 +1,6 @@
 # Shinigami API
 
-A Node.js API that extracts the player configuration from the authorized ZokoAnime episode route, inspects its HLS master playlist, and exposes a signed HLS/media proxy.
+A Node.js API with a built-in developer website and interactive endpoint playground. It extracts the player configuration from the authorized ZokoAnime episode route, inspects its HLS master playlist, and exposes a signed HLS/media proxy.
 
 ## Requirements
 
@@ -23,6 +23,10 @@ openssl rand -hex 32
 ```
 
 Set the generated value as `PROXY_SIGNING_SECRET`. Also set `PUBLIC_BASE_URL` to the public HTTPS origin of this API when deploying behind a reverse proxy.
+
+## Developer website
+
+Open the API root (`/`) in your browser for the Shinigami API documentation website and interactive playground. The playground can call the configured API base URL, test the health and ZokoAnime extraction routes, and send GET or HEAD requests to a signed proxy URL. When deployed, the website is served by the same Express server; no separate frontend deployment is required.
 
 ## Endpoints
 

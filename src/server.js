@@ -1,5 +1,10 @@
 import express from "express";
 import cors from "cors";
+import {
+  extractPlayerConfig,
+  inspectPlayerHtml,
+  fetchAndInspectMasterPlaylist
+} from "./zokoanime.js";
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -8,41 +13,6 @@ const UPSTREAM_BASE = "https://zokoanime.video";
 app.disable("x-powered-by");
 app.use(cors());
 app.use(express.json({ limit: "32kb" }));
-
-function inspectPlayerHtml(html, pageUrl) {
-  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const title = titleMatch?.[1]
-    ?.replace(/<[^>]*>/g, "")
-    .replace(/&amp;/g, "&")
-    .trim() || null;
-
-  const configMatch = html.match(/window\.__P\s*=\s*(["'])([\s\S]*?)\1\s*;?/);
-  const scriptSources = [];
-  const scriptRegex = /<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
-  let scriptMatch;
-
-  while ((scriptMatch = scriptRegex.exec(html)) !== null) {
-    try {
-      scriptSources.push(new URL(scriptMatch[1], pageUrl).toString());
-    } catch {
-      scriptSources.push(scriptMatch[1]);
-    }
-  }
-
-  return {
-    title,
-    hasPlayerContainer: /id=["']player["']/i.test(html),
-    hasPlayerConfig: Boolean(configMatch),
-    playerConfig: configMatch
-      ? {
-          variable: "window.__P",
-          valueLength: configMatch[2].length,
-          representation: "opaque string; decoding format not verified"
-        }
-      : null,
-    scripts: scriptSources
-  };
-}
 
 app.get("/", (_req, res) => {
   res.json({
@@ -107,7 +77,62 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
 
     const body = await upstream.text();
     const contentType = upstream.headers.get("content-type") || "";
-    const page = inspectPlayerHtml(body, upstream.url || upstreamUrl.toString());
+    const finalUrl = upstream.url || upstreamUrl.toString();
+    const page = inspectPlayerHtml(body, finalUrl);
+
+    if (!upstream.ok) {
+      return res.status(502).json({
+        success: false,
+        error: "UPSTREAM_BAD_STATUS",
+        request: { malId: Number(malId), episode: Number(episode), mode },
+        upstream: {
+          url: finalUrl,
+          status: upstream.status,
+          statusText: upstream.statusText,
+          contentType
+        },
+        page
+      });
+    }
+
+    let playerConfig;
+    try {
+      playerConfig = extractPlayerConfig(body);
+    } catch (error) {
+      return res.status(422).json({
+        success: false,
+        error: "PLAYER_CONFIG_EXTRACTION_FAILED",
+        message: error.message,
+        request: { malId: Number(malId), episode: Number(episode), mode },
+        upstream: {
+          url: finalUrl,
+          status: upstream.status,
+          statusText: upstream.statusText,
+          contentType
+        },
+        page,
+        ...(req.query.includeRaw === "1" ? { rawBody: body } : {})
+      });
+    }
+
+    const masterPlaylistUrl = typeof playerConfig.src === "string"
+      ? playerConfig.src
+      : null;
+    const manifest = await fetchAndInspectMasterPlaylist(masterPlaylistUrl);
+    const subtitleTracks = Array.isArray(playerConfig.subtitles)
+      ? playerConfig.subtitles.map((track, index) => ({
+          id: "subtitle-" + index,
+          language: track.lang || null,
+          label: track.label || track.lang || "Unknown",
+          default: Boolean(track.default),
+          url: track.src || null
+        }))
+      : [];
+
+    const audioDetected = manifest.fetched
+      ? manifest.audioTracks.length > 0 ||
+        manifest.audioStatus === "audio-codec-advertised-in-variant"
+      : null;
 
     const result = {
       success: true,
@@ -117,7 +142,7 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
         mode
       },
       upstream: {
-        url: upstream.url,
+        url: finalUrl,
         status: upstream.status,
         statusText: upstream.statusText,
         ok: upstream.ok,
@@ -125,7 +150,44 @@ app.get("/api/zokoanime/stream/:malId/:episode/:mode", async (req, res) => {
         isJson: contentType.includes("application/json"),
         isHtml: contentType.includes("text/html")
       },
-      page
+      page,
+      playback: {
+        format: "hls",
+        masterPlaylistUrl,
+        posterUrl: playerConfig.poster || null,
+        spriteVttUrl: playerConfig.sprite_vtt || null,
+        manifest,
+        videoVariants: manifest.variants || [],
+        audio: {
+          defaultLanguage: playerConfig.default_audio || null,
+          tracks: manifest.audioTracks || [],
+          status: manifest.fetched
+            ? manifest.audioStatus
+            : "not-inspected"
+        },
+        subtitles: {
+          count: subtitleTracks.length,
+          tracks: subtitleTracks,
+          hlsRenditions: manifest.subtitleTracks || []
+        }
+      },
+      playerSettings: {
+        engine: playerConfig.player?.engine || null,
+        defaultQuality: playerConfig.player?.default_quality || null,
+        autoplay: Boolean(playerConfig.autoplay),
+        muted: Boolean(playerConfig.muted),
+        resume: Boolean(playerConfig.resume),
+        startTime: Number(playerConfig.start_time) || 0,
+        autoSkip: Boolean(playerConfig.auto_skip),
+        autoNext: Boolean(playerConfig.auto_next)
+      },
+      diagnostics: {
+        videoDetected: Boolean(masterPlaylistUrl),
+        audioDetected,
+        subtitleDetected: subtitleTracks.length > 0,
+        subtitleCount: subtitleTracks.length,
+        manifestFetched: Boolean(manifest.fetched)
+      }
     };
 
     if (req.query.includeRaw === "1") {

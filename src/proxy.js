@@ -193,6 +193,7 @@ function copySafeResponseHeaders(upstream, res) {
   }
 
   res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Expose-Headers", "Accept-Ranges, Content-Range, Content-Length, Content-Type, ETag");
 }
 
 function publicBaseUrlForRequest(req) {

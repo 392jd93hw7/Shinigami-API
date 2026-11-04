@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#09090d">
+<title>Shinigami API — Developer Console</title>
+<style>
+:root{color-scheme:dark;--bg:#09090d;--panel:#111117;--panel2:#17171f;--line:#292936;--muted:#9292a3;--text:#f4f4f7;--purple:#9b7bff;--green:#62dfae;--red:#ff737d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -15%,#282044 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer}.layout{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}.sidebar{border-right:1px solid var(--line);padding:25px 16px;position:sticky;top:0;height:100vh;background:#0b0b10}.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:18px;padding:0 9px 28px}.logo{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#a78bfa,#6846d9);color:white;font-weight:900}.side-label{color:#696979;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:13px 10px 7px}.nav{display:flex;align-items:center;gap:10px;padding:10px;border-radius:9px;color:#b5b5c2;text-decoration:none;margin:3px 0}.nav:hover,.nav.active{background:#211b34;color:#d9ceff}.nav span:first-child{width:18px;text-align:center}.side-foot{position:absolute;bottom:20px;left:24px;color:#777789;font-size:12px}.main{max-width:1450px;width:100%;padding:34px clamp(20px,4vw,58px) 70px;margin:0 auto}.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--muted);font-size:12px;margin-bottom:40px}.status{display:inline-flex;align-items:center;gap:7px;border:1px solid #23513f;background:#10251d;color:var(--green);padding:6px 10px;border-radius:99px}.dot{width:7px;height:7px;border-radius:50%;background:currentColor}.hero{max-width:850px;margin-bottom:34px}.eyebrow{color:#b49dff;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:2px}.hero h1{font-size:clamp(34px,5vw,54px);line-height:1.06;letter-spacing:-2px;margin:12px 0}.hero p{color:var(--muted);font-size:15px;max-width:690px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:25px 0 36px}.stat,.card{border:1px solid var(--line);background:linear-gradient(145deg,#14141c,#101016);border-radius:14px}.stat{padding:16px 18px}.stat strong{display:block;font-size:23px}.stat span{color:var(--muted);font-size:12px}.section{margin:38px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:14px}.section h2{font-size:20px;letter-spacing:-.4px;margin:0}.section-head p{margin:4px 0 0;color:var(--muted);font-size:12px}.endpoint-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.endpoint{padding:17px}.method{font-size:10px;font-weight:900;letter-spacing:1px;color:#07150f;background:var(--green);border-radius:5px;padding:3px 7px}.method.post{background:#a78bfa;color:#160e2b}.path{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;margin:12px 0 6px;color:#e4dcff}.endpoint p{color:var(--muted);font-size:12px;margin:0 0 12px}.small-link{color:#bdaaff;text-decoration:none;font-size:12px}.playground{display:grid;grid-template-columns:minmax(280px,.82fr) minmax(0,1.18fr);gap:14px}.card{padding:19px}.card h3{margin:0 0 5px;font-size:16px}.sub{color:var(--muted);font-size:12px;margin:0 0 17px}.field{margin:13px 0}.field label{display:block;color:#b8b8c5;font-size:12px;margin-bottom:6px}.field input,.field select{width:100%;background:#0b0b11;border:1px solid #333342;border-radius:8px;padding:10px 11px;color:var(--text);outline:none}.field input:focus,.field select:focus{border-color:var(--purple)}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.check{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.btn{border:1px solid var(--line);background:#20202b;color:#eee;padding:9px 13px;border-radius:8px}.btn.primary{background:#8c6bf0;border-color:#8c6bf0;color:white;font-weight:700}.btn:hover{filter:brightness(1.12)}.response-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.response-top h3{margin:0}.response-meta{font-size:11px;color:var(--muted)}.response{background:#08080d;border:1px solid #292936;border-radius:9px;min-height:310px;max-height:650px;overflow:auto;padding:14px;color:#d8d8e4;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.response.empty{color:#777789;display:grid;place-items:center;text-align:center}.response a{color:#bdaaff}.base-url{display:flex;gap:8px;align-items:center;margin:0 0 15px}.base-url input{flex:1;min-width:0;background:#0b0b11;border:1px solid #333342;border-radius:8px;padding:9px 11px;color:white}.table-wrap{overflow-x:auto}.endpoint-table{width:100%;border-collapse:collapse;font-size:12px}.endpoint-table th,.endpoint-table td{text-align:left;padding:11px;border-bottom:1px solid var(--line);vertical-align:top}.endpoint-table th{color:#9a9aaa;font-weight:600}.endpoint-table code{color:#d9ceff}.note{border:1px solid #42366c;background:#171327;border-radius:10px;padding:13px 15px;color:#c8c0df;font-size:12px}.footer{border-top:1px solid var(--line);padding-top:20px;margin-top:55px;color:#777789;font-size:12px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:relative;height:auto;padding:12px 16px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 5px 10px}.side-label,.side-foot{display:none}.sidebar nav{display:flex;overflow:auto}.nav{white-space:nowrap;padding:8px}.main{padding-top:24px}.playground{grid-template-columns:1fr}}@media(max-width:620px){.endpoint-grid,.stats{grid-template-columns:1fr}.topline{margin-bottom:25px}.main{padding-left:15px;padding-right:15px}.row{grid-template-columns:1fr}.response{min-height:240px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+ <div class="brand"><div class="logo">S</div> Shinigami API</div>
+ <div class="side-label">DEVELOPER</div>
+ <nav>
+  <a class="nav active" href="#overview"><span>⌂</span> Overview</a>
+  <a class="nav" href="#endpoints"><span>⌘</span> Endpoints</a>
+  <a class="nav" href="#playground"><span>▷</span> API Playground</a>
+  <a class="nav" href="#reference"><span>▤</span> Reference</a>
+ </nav>
+ <div class="side-foot">Unofficial API console · v1.0</div>
+</aside>
+<main class="main">
+ <div class="topline"><span>DOCUMENTATION&nbsp; / &nbsp;API CONSOLE</span><span class="status"><i class="dot"></i><span id="healthText">Checking API…</span></span></div>
+ <section class="hero" id="overview">
+  <div class="eyebrow">Developer platform</div>
+  <h1>Shinigami API</h1>
+  <p>Explore the available API routes, inspect ZokoAnime episode data, and test requests from one place. Responses are shown live from your running API server.</p>
+ </section>
+ <div class="stats">
+  <div class="stat"><strong>3</strong><span>Available routes</span></div>
+  <div class="stat"><strong>GET</strong><span>Request method</span></div>
+  <div class="stat"><strong>JSON</strong><span>API response format</span></div>
+ </div>
+ <section class="section" id="endpoints">
+  <div class="section-head"><div><h2>Endpoints</h2><p>These are the routes currently implemented by the server.</p></div></div>
+  <div class="endpoint-grid">
+   <article class="card endpoint"><span class="method">GET</span><div class="path">/health</div><p>Returns the server health status.</p><a class="small-link" href="#playground" data-preset="health">Try endpoint →</a></article>
+   <article class="card endpoint"><span class="method">GET</span><div class="path">/api/zokoanime/stream/:malId/:episode/:mode</div><p>Fetches the ZokoAnime player page, extracts its player config, inspects the HLS master playlist, and returns playback, audio, subtitle and diagnostic data.</p><a class="small-link" href="#playground" data-preset="stream">Try endpoint →</a></article>
+   <article class="card endpoint"><span class="method">GET / HEAD</span><div class="path">/api/proxy/:token</div><p>Validates a signed token and proxies an authorized media resource. HLS playlists are rewritten so nested media requests pass through this API.</p><a class="small-link" href="#playground" data-preset="proxy">Try endpoint →</a></article>
+  </div>
+ </section>
+ <section class="section" id="playground">
+  <div class="section-head"><div><h2>API Playground</h2><p>Build a request, send it to the API, and inspect the raw response.</p></div></div>
+  <div class="base-url"><label for="baseUrl">Base URL</label><input id="baseUrl" aria-label="API base URL" placeholder="https://your-api.example.com"></div>
+  <div class="playground">
+   <div class="card">
+    <h3>Request builder</h3><p class="sub">Configure the endpoint and parameters.</p>
+    <div class="field"><label for="endpoint">Endpoint</label><select id="endpoint"><option value="health">GET /health</option><option value="stream">GET /api/zokoanime/stream/:malId/:episode/:mode</option><option value="proxy">GET /api/proxy/:token</option></select></div>
+    <div id="streamFields">
+     <div class="row">
+      <div class="field"><label for="malId">MAL ID</label><input id="malId" type="number" min="1" value="64340"></div>
+      <div class="field"><label for="episode">Episode</label><input id="episode" type="number" min="1" value="6"></div>
+     </div>
+     <div class="field"><label for="mode">Audio mode</label><select id="mode"><option value="sub">Subtitled (sub)</option><option value="dub">Dubbed (dub)</option></select></div>
+     <label class="check"><input type="checkbox" id="raw"> Include raw upstream HTML (debug)</label>
+    </div>
+    <div id="proxyFields" hidden>
+     <div class="field"><label for="token">Signed proxy token</label><input id="token" placeholder="Paste token from hlsProxyUrl"></div>
+     <label class="check"><input type="checkbox" id="head"> Send HEAD request</label>
+    </div>
+    <div class="actions"><button class="btn primary" id="send">▶ Send request</button><button class="btn" id="reset">Reset</button></div>
+    <div class="field"><label>Generated request</label><input id="requestUrl" readonly value="/health"></div>
+   </div>
+   <div class="card">
+    <div class="response-top"><h3>Response</h3><div><span class="response-meta" id="responseMeta">No request sent</span> <button class="btn" id="copy" style="padding:5px 8px;font-size:11px">Copy</button></div></div>
+    <pre class="response empty" id="response">Your API response will appear here.</pre>
+   </div>
+  </div>
+ </section>
+ <section class="section" id="reference">
+  <div class="section-head"><div><h2>Quick reference</h2><p>Parameters and response fields from the current implementation.</p></div></div>
+  <div class="card table-wrap">
+   <table class="endpoint-table"><thead><tr><th>Route</th><th>Parameter</th><th>Details</th></tr></thead><tbody>
+    <tr><td><code>/health</code></td><td>—</td><td>No parameters. Returns <code>success</code> and <code>status</code>.</td></tr>
+    <tr><td><code>/api/zokoanime/stream/…</code></td><td><code>malId</code></td><td>Positive MAL ID integer.</td></tr>
+    <tr><td><code>/api/zokoanime/stream/…</code></td><td><code>episode</code></td><td>Positive episode integer.</td></tr>
+    <tr><td><code>/api/zokoanime/stream/…</code></td><td><code>mode</code></td><td>Either <code>sub</code> or <code>dub</code>.</td></tr>
+    <tr><td><code>/api/zokoanime/stream/…</code></td><td><code>?includeRaw=1</code></td><td>Optional. Adds the upstream HTML to the response for debugging.</td></tr>
+    <tr><td><code>/api/proxy/:token</code></td><td><code>token</code></td><td>Signed token returned in proxy URLs. Supports GET and HEAD.</td></tr>
+   </tbody></table>
+  </div>
+  <div class="note" style="margin-top:13px">Audio note: the API reports audio renditions and codec information found in the master playlist. A detected track does not guarantee that its segments will play successfully; validate playback in your target player.</div>
+ </section>
+ <footer class="footer"><span>Shinigami API · Developer Console</span><span>Only documented, currently implemented routes are listed.</span></footer>
+</main>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const endpoint=$("endpoint"),base=$("baseUrl"),response=$("response"),meta=$("responseMeta"),requestUrl=$("requestUrl");
+function baseValue(){return (base.value.trim()||location.origin).replace(/\/+$/,"")}
+function build(){
+ let path="/health",method="GET";
+ if(endpoint.value==="stream"){
+  path="/api/zokoanime/stream/"+encodeURIComponent($("malId").value)+"/"+encodeURIComponent($("episode").value)+"/"+$("mode").value;
+  if($("raw").checked)path+="?includeRaw=1";
+ }else if(endpoint.value==="proxy"){
+  path="/api/proxy/"+encodeURIComponent($("token").value.trim());
+  method=$("head").checked?"HEAD":"GET";
+ }
+ requestUrl.value=method+" "+baseValue()+path;
+ return {path,method};
+}
+function updateFields(){
+ $("streamFields").hidden=endpoint.value!=="stream";
+ $("proxyFields").hidden=endpoint.value!=="proxy";
+ build();
+}
+endpoint.addEventListener("change",updateFields);
+["malId","episode","mode","raw","token","head"].forEach(id=>$(id).addEventListener("input",build));
+base.addEventListener("input",build);
+document.querySelectorAll("[data-preset]").forEach(a=>a.addEventListener("click",()=>{endpoint.value=a.dataset.preset;updateFields()}));
+$("send").addEventListener("click",async()=>{
+ const {path,method}=build(),url=baseValue()+path;
+ response.classList.remove("empty");response.textContent="Sending request…";meta.textContent="Request in progress";
+ $("send").disabled=true;
+ const start=performance.now();
+ try{
+  const res=await fetch(url,{method,headers:{Accept:"application/json"}});
+  const elapsed=Math.round(performance.now()-start);
+  const type=res.headers.get("content-type")||"";
+  let body;
+  if(method==="HEAD")body={message:"HEAD request completed. Response body is intentionally empty.",headers:Object.fromEntries(res.headers.entries())};
+  else if(type.includes("json"))body=await res.json();
+  else body=await res.text();
+  response.textContent=typeof body==="string"?body:JSON.stringify(body,null,2);
+  meta.textContent=res.status+" "+res.statusText+" · "+elapsed+" ms";
+ }catch(err){
+  response.textContent=JSON.stringify({error:"REQUEST_FAILED",message:err.message,tip:"Check the API base URL, server status, and CORS configuration."},null,2);
+  meta.textContent="Network error";
+ }finally{$("send").disabled=false}
+});
+$("copy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(response.textContent);$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy",1200)}catch{$("copy").textContent="Unavailable"}});
+$("reset").addEventListener("click",()=>{$("malId").value="64340";$("episode").value="6";$("mode").value="sub";$("raw").checked=false;$("token").value="";$("head").checked=false;endpoint.value="health";updateFields();response.textContent="Your API response will appear here.";response.classList.add("empty");meta.textContent="No request sent"});
+async function checkHealth(){try{const r=await fetch(baseValue()+"/health");if(!r.ok)throw Error();$("healthText").textContent="API online"}catch{$("healthText").textContent="API status unknown"}}
+updateFields();checkHealth();
+</script>
+</body>
+</html>
